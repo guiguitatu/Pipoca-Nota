@@ -40,7 +40,10 @@ export default function SignupScreen({ navigation }: Props) {
 
 	const onSubmit = async () => {
 		await signUp({ name, email: email.trim(), password, profileImageUri: imageUri });
-		navigation.replace('Auth');
+		navigation.reset({
+			index: 0,
+			routes: [{ name: 'Main' }],
+		});
 	};
 
 	const focusName = () => {
