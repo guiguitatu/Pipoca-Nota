@@ -7,7 +7,7 @@ import { useMovies } from '../context/MoviesContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
-export default function MovieDetailsScreen({ route }: Props) {
+export default function MovieDetailsScreen({ route, navigation }: Props) {
 	const { id, posterPath } = route.params;
 	const [movie, setMovie] = useState<any | null>(null);
 	const [rating, setRating] = useState<string>('10');
@@ -35,6 +35,7 @@ export default function MovieDetailsScreen({ route }: Props) {
 			rating: value
 		});
 		Alert.alert('Salvo', 'Filme salvo na sua lista de assistidos.');
+		navigation.navigate('Main', { screen: 'Assistidos' as never } as never);
 	};
 
 	return (
