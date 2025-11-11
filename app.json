@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Pipoca & Nota",
+    "slug": "pipoca-nota",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "pipocanota",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#121212"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/placeholder"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pipoca.nota"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#121212"
+      },
+      "package": "com.pipoca.nota"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir que o app acesse suas fotos para escolher uma imagem de perfil."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "placeholder-project-id"
+      }
+    }
+  }
+}
+
+
