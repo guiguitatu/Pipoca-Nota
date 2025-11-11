@@ -4,6 +4,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { TMDB_IMAGE_BASE, getMovieDetails } from '../services/tmdb';
 import { useMovies } from '../context/MoviesContext';
+import { useThemePreference } from '../context/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
@@ -12,6 +13,7 @@ export default function MovieDetailsScreen({ route, navigation }: Props) {
 	const [movie, setMovie] = useState<any | null>(null);
 	const [rating, setRating] = useState<string>('10');
 	const { saveRating, watched } = useMovies();
+	const { colors: palette } = useThemePreference();
 
 	useEffect(() => {
 		getMovieDetails(id).then(setMovie).catch(() => {});
@@ -39,36 +41,48 @@ export default function MovieDetailsScreen({ route, navigation }: Props) {
 	};
 
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
+		<ScrollView contentContainerStyle={[styles.container, { backgroundColor: palette.background }]}>
 			{posterPath || movie?.poster_path ? (
 				<Image
 					source={{ uri: `${TMDB_IMAGE_BASE}${posterPath || movie?.poster_path}` }}
-					style={styles.poster}
+					style={[styles.poster, { backgroundColor: palette.overlay }]}
 					accessibilityLabel={`Pôster do filme ${movie?.title ?? ''}`}
 					accessibilityIgnoresInvertColors
 				/>
 			) : (
-				<View style={[styles.poster, styles.posterPlaceholder]} accessibilityLabel="Filme sem pôster disponível" />
+				<View style={[styles.poster, styles.posterPlaceholder, { backgroundColor: palette.overlay }]} accessibilityLabel="Filme sem pôster disponível" />
 			)}
-			<Text style={styles.title}>{movie?.title}</Text>
-			<Text style={styles.subtitle}>{movie?.release_date}</Text>
-			<Text style={styles.overview}>{movie?.overview}</Text>
+			<Text style={[styles.title, { color: palette.text }]}>{movie?.title}</Text>
+			<Text style={[styles.subtitle, { color: palette.textMuted }]}>{movie?.release_date}</Text>
+			<Text style={[styles.overview, { color: palette.text }]}>{movie?.overview}</Text>
 
-			<View style={styles.rateRow}>
-				<Text style={styles.rateLabel}>Sua nota (0-10):</Text>
+			<View style={[styles.rateRow, { backgroundColor: palette.surface, borderColor: palette.border }]}>
+				<Text style={[styles.rateLabel, { color: palette.text }]}>Sua nota (0-10):</Text>
 				<TextInput
 					accessibilityLabel="Campo para informar sua avaliação de zero a dez"
 					keyboardType="numeric"
-					style={styles.rateInput}
+					style={[
+						styles.rateInput,
+						{
+							backgroundColor: palette.inputBackground,
+							color: palette.inputText,
+							borderColor: palette.border
+						}
+					]}
 					value={rating}
 					onChangeText={setRating}
 					maxLength={4}
+					placeholderTextColor={palette.inputPlaceholder}
 				/>
 				<Pressable
 					accessibilityRole="button"
 					accessibilityLabel="Salvar filme na lista de assistidos"
 					onPress={onSave}
-					style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+					style={({ pressed }) => [
+						styles.button,
+						{ backgroundColor: palette.primary },
+						pressed && styles.buttonPressed
+					]}
 				>
 					<Text style={styles.buttonText}>Salvar</Text>
 				</Pressable>
@@ -82,20 +96,19 @@ const styles = StyleSheet.create({
 	poster: { width: '100%', height: 460, borderRadius: 12, backgroundColor: '#e5e7eb' },
 	posterPlaceholder: { justifyContent: 'center', alignItems: 'center' },
 	title: { fontSize: 22, fontWeight: '800', marginTop: 8 },
-	subtitle: { color: '#64748b' },
+	subtitle: {},
 	overview: { fontSize: 14, lineHeight: 20 },
-	rateRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8 },
+	rateRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8, padding: 10, borderRadius: 12, borderWidth: 1 },
 	rateLabel: { fontSize: 14 },
 	rateInput: {
 		borderWidth: 1,
-		borderColor: '#cbd5e1',
 		borderRadius: 8,
 		paddingHorizontal: 12,
 		paddingVertical: 10,
 		fontSize: 16,
 		width: 80
 	},
-	button: { backgroundColor: '#16a34a', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 10, minHeight: 44, minWidth: 44 },
+	button: { paddingVertical: 12, paddingHorizontal: 16, borderRadius: 10, minHeight: 44, minWidth: 44 },
 	buttonPressed: { opacity: 0.9 },
 	buttonText: { color: 'white', fontWeight: '700' }
 });

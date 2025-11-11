@@ -1,22 +1,30 @@
 import React from 'react';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { useColorScheme } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from './src/context/AuthContext';
 import { MoviesProvider } from './src/context/MoviesContext';
+import { ThemeProvider, useThemePreference } from './src/context/ThemeContext';
 import RootNavigator from './src/navigation/RootNavigator';
 
-export default function App() {
-	const scheme = useColorScheme();
+function AppInner() {
+	const { navigationTheme, statusBarStyle } = useThemePreference();
 	return (
-		<AuthProvider>
-			<MoviesProvider>
-				<NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-					<StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-					<RootNavigator />
-				</NavigationContainer>
-			</MoviesProvider>
-		</AuthProvider>
+		<NavigationContainer theme={navigationTheme}>
+			<StatusBar style={statusBarStyle} />
+			<RootNavigator />
+		</NavigationContainer>
+	);
+}
+
+export default function App() {
+	return (
+		<ThemeProvider>
+			<AuthProvider>
+				<MoviesProvider>
+					<AppInner />
+				</MoviesProvider>
+			</AuthProvider>
+		</ThemeProvider>
 	);
 }
 

@@ -1,36 +1,43 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, Pressable, Alert } from 'react-native';
 import { useMovies } from '../context/MoviesContext';
 import { TMDB_IMAGE_BASE } from '../services/tmdb';
+import { useThemePreference } from '../context/ThemeContext';
 
 export default function WatchedScreen() {
 	const { watched, removeWatched } = useMovies();
+	const { colors: palette } = useThemePreference();
 
-	const onRemove = (id: number) => {
-		Alert.alert('Remover', 'Deseja remover este filme da sua lista?', [
-			{ text: 'Cancelar', style: 'cancel' },
-			{ text: 'Remover', style: 'destructive', onPress: () => void removeWatched(id) }
-		]);
-	};
+	const onRemove = useCallback(async (id: number, title: string) => {
+		try {
+			await removeWatched(id);
+			Alert.alert('Removido', `${title} foi removido da sua lista.`);
+		} catch {
+			Alert.alert('Erro', 'Não foi possível remover este filme.');
+		}
+	}, [removeWatched]);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={{ flex: 1, backgroundColor: palette.background }}>
 			<FlatList
 				data={watched}
 				keyExtractor={item => String(item.id)}
 				ListEmptyComponent={
 					<View style={{ padding: 24 }}>
-						<Text style={{ textAlign: 'center', color: '#64748b' }}>
+						<Text style={{ textAlign: 'center', color: palette.textMuted }}>
 							Você ainda não adicionou filmes assistidos.
 						</Text>
 					</View>
 				}
 				renderItem={({ item }) => (
-					<View style={styles.row}>
+					<View style={[
+						styles.row,
+						{ backgroundColor: palette.listItem, borderColor: palette.border }
+					]}>
 						{item.posterPath ? (
 							<Image
 								source={{ uri: `${TMDB_IMAGE_BASE}${item.posterPath}` }}
-								style={styles.poster}
+								style={[styles.poster, { backgroundColor: palette.overlay }]}
 								accessibilityLabel={`Pôster do filme ${item.title}`}
 								accessibilityIgnoresInvertColors
 							/>
@@ -38,15 +45,19 @@ export default function WatchedScreen() {
 							<View style={[styles.poster, styles.posterPlaceholder]} accessibilityLabel="Filme sem pôster disponível" />
 						)}
 						<View style={{ flex: 1 }}>
-							<Text style={styles.title}>{item.title}</Text>
-							<Text style={styles.note}>Sua nota: {item.rating}</Text>
-							<Text style={styles.date}>Em {new Date(item.ratedAt).toLocaleDateString()}</Text>
+							<Text style={[styles.title, { color: palette.text }]}>{item.title}</Text>
+							<Text style={[styles.note, { color: palette.text }]}>{`Sua nota: ${item.rating}`}</Text>
+							<Text style={[styles.date, { color: palette.textMuted }]}>Em {new Date(item.ratedAt).toLocaleDateString()}</Text>
 						</View>
 						<Pressable
 							accessibilityRole="button"
 							accessibilityLabel={`Remover ${item.title} da sua lista`}
-							onPress={() => onRemove(item.id)}
-							style={({ pressed }) => [styles.removeButton, pressed && { opacity: 0.9 }]}
+							onPress={() => { void onRemove(item.id, item.title); }}
+							style={({ pressed }) => [
+								styles.removeButton,
+								{ backgroundColor: palette.danger },
+								pressed && { opacity: 0.9 }
+							]}
 						>
 							<Text style={styles.removeText}>Remover</Text>
 						</Pressable>
@@ -63,7 +74,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		gap: 12,
 		marginBottom: 12,
-		backgroundColor: '#f8fafc',
+		borderWidth: 1,
 		borderRadius: 12,
 		padding: 10,
 		alignItems: 'center'
@@ -71,9 +82,9 @@ const styles = StyleSheet.create({
 	poster: { width: 64, height: 96, borderRadius: 8, backgroundColor: '#e5e7eb' },
 	posterPlaceholder: { justifyContent: 'center', alignItems: 'center' },
 	title: { fontSize: 16, fontWeight: '700' },
-	note: { color: '#334155' },
-	date: { color: '#64748b', fontSize: 12 },
-	removeButton: { backgroundColor: '#ef4444', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 8, minHeight: 44, minWidth: 44, justifyContent: 'center' },
+	note: {},
+	date: { fontSize: 12 },
+	removeButton: { paddingVertical: 10, paddingHorizontal: 12, borderRadius: 8, minHeight: 44, minWidth: 44, justifyContent: 'center' },
 	removeText: { color: 'white', fontWeight: '700' }
 });
 
