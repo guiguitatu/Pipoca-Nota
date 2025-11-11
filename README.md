@@ -32,19 +32,6 @@ Aplicativo móvel (React Native) para catálogo pessoal de filmes, com:
 
 ```bash
 npm install
-
-# Navegação (React Navigation v6 - compatível com Expo SDK 51)
-npm install @react-navigation/native@^6 @react-navigation/native-stack@^6 @react-navigation/bottom-tabs@^6
-npm install react-native-screens react-native-safe-area-context
-
-# Armazenamento
-npm install @react-native-async-storage/async-storage
-
-# Imagens (câmera/galeria)
-npm install react-native-image-picker
-
-# Ícones (opcional)
-npm install react-native-vector-icons
 ```
 
 No iOS, após instalar pacotes, rode:
@@ -86,7 +73,7 @@ npm config set registry https://registry.npmmirror.com
 ```
 
 ### Instalar/atualizar o Metro (se necessário)
-O Metro já vem junto no fluxo com Expo, mas deixamos o pacote listado para garantir compatibilidade.
+O Metro já vem incluso via Expo, mas o pacote aparece em `devDependencies` para assegurar compatibilidade.
 Caso precise reinstalar/atualizar manualmente:
 
 ```bash
