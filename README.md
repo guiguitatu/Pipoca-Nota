@@ -32,19 +32,6 @@ Aplicativo móvel (React Native) para catálogo pessoal de filmes, com:
 
 ```bash
 npm install
-
-# Navegação
-npm install @react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs
-npm install react-native-screens react-native-safe-area-context
-
-# Armazenamento
-npm install @react-native-async-storage/async-storage
-
-# Imagens (câmera/galeria)
-npm install react-native-image-picker
-
-# Ícones (opcional)
-npm install react-native-vector-icons
 ```
 
 No iOS, após instalar pacotes, rode:
@@ -63,26 +50,34 @@ export const TMDB_API_KEY = 'SUA_CHAVE_TMDB_AQUI';
 Observação: não comitar chaves reais em repositórios públicos.
 
 ### Executar o app
-Em dois terminais:
+Você pode usar os scripts do npm. Em dois terminais:
 
 1) Metro (bundler):
 ```bash
-npx react-native start
+npm run metro
 ```
 
 2) Plataforma:
 ```bash
 # Android
-npx react-native run-android
+npm run android
 
 # iOS (em macOS com Xcode)
-npx react-native run-ios
+npm run ios
 ```
 
 Se estiver no PowerShell e enfrentar erro de rede do npm (ECONNRESET), tente trocar o registry temporariamente e repetir o comando:
 
 ```bash
 npm config set registry https://registry.npmmirror.com
+```
+
+### Instalar/atualizar o Metro (se necessário)
+O Metro já vem incluso via Expo, mas o pacote aparece em `devDependencies` para assegurar compatibilidade.
+Caso precise reinstalar/atualizar manualmente:
+
+```bash
+npm install -D metro
 ```
 
 ### Permissões
