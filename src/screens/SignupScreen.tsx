@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Image, AccessibilityInfo, findNodeHandle } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../context/AuthContext';
+import { useThemePreference } from '../context/ThemeContext';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
@@ -9,6 +10,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 export default function SignupScreen({ navigation }: Props) {
 	const { signUp } = useAuth();
+	const { colors: palette } = useThemePreference();
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -52,8 +54,8 @@ export default function SignupScreen({ navigation }: Props) {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text accessibilityRole="header" style={styles.title}>Criar conta</Text>
+		<View style={[styles.container, { backgroundColor: palette.background }]}>
+			<Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>Criar conta</Text>
 
 			<View style={styles.avatarRow}>
 				{imageUri ? (
@@ -67,50 +69,65 @@ export default function SignupScreen({ navigation }: Props) {
 					<View style={[styles.avatar, styles.avatarPlaceholder]} accessibilityLabel="Sem foto de perfil" />
 				)}
 				<View style={{ gap: 8 }}>
-					<Pressable accessibilityRole="button" accessibilityLabel="Escolher da galeria" style={styles.smallButton} onPress={pickImage}>
-						<Text style={styles.smallButtonText}>Escolher</Text>
+					<Pressable accessibilityRole="button" accessibilityLabel="Escolher da galeria" style={[styles.smallButton, { backgroundColor: palette.primary }]} onPress={pickImage}>
+						<Text style={[styles.smallButtonText, { color: palette.surface }]}>Escolher</Text>
 					</Pressable>
-					<Pressable accessibilityRole="button" accessibilityLabel="Tirar foto com a câmera" style={styles.smallButton} onPress={takePhoto}>
-						<Text style={styles.smallButtonText}>Câmera</Text>
+					<Pressable accessibilityRole="button" accessibilityLabel="Tirar foto com a câmera" style={[styles.smallButton, { backgroundColor: palette.primary }]} onPress={takePhoto}>
+						<Text style={[styles.smallButtonText, { color: palette.surface }]}>Câmera</Text>
 					</Pressable>
 				</View>
 			</View>
 
-			<Text style={styles.label}>Nome</Text>
+			<Text style={[styles.label, { color: palette.text }]}>Nome</Text>
 			<TextInput
 				ref={nameRef}
 				accessibilityLabel="Campo de nome"
 				placeholder="Seu nome"
-				style={styles.input}
+				placeholderTextColor={palette.inputPlaceholder}
+				style={[styles.input, {
+					backgroundColor: palette.inputBackground,
+					borderColor: palette.border,
+					color: palette.inputText
+				}]}
 				value={name}
 				onChangeText={setName}
 				onFocus={focusName}
 			/>
 
-			<Text style={styles.label}>E-mail</Text>
+			<Text style={[styles.label, { color: palette.text }]}>E-mail</Text>
 			<TextInput
 				accessibilityLabel="Campo de e-mail"
 				autoCapitalize="none"
 				autoComplete="email"
 				keyboardType="email-address"
 				placeholder="seu@email.com"
-				style={styles.input}
+				placeholderTextColor={palette.inputPlaceholder}
+				style={[styles.input, {
+					backgroundColor: palette.inputBackground,
+					borderColor: palette.border,
+					color: palette.inputText
+				}]}
 				value={email}
 				onChangeText={setEmail}
 			/>
 
-			<Text style={styles.label}>Senha</Text>
+			<Text style={[styles.label, { color: palette.text }]}>Senha</Text>
 			<TextInput
 				accessibilityLabel="Campo de senha"
 				secureTextEntry
 				placeholder="Crie uma senha"
-				style={styles.input}
+				placeholderTextColor={palette.inputPlaceholder}
+				style={[styles.input, {
+					backgroundColor: palette.inputBackground,
+					borderColor: palette.border,
+					color: palette.inputText
+				}]}
 				value={password}
 				onChangeText={setPassword}
 			/>
 
-			<Pressable accessibilityRole="button" accessibilityLabel="Concluir cadastro" onPress={onSubmit} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
-				<Text style={styles.buttonText}>Cadastrar</Text>
+			<Pressable accessibilityRole="button" accessibilityLabel="Concluir cadastro" onPress={onSubmit} style={({ pressed }) => [styles.button, { backgroundColor: '#16a34a' }, pressed && styles.buttonPressed]}>
+				<Text style={[styles.buttonText, { color: palette.surface }]}>Cadastrar</Text>
 			</Pressable>
 		</View>
 	);
@@ -124,10 +141,10 @@ const styles = StyleSheet.create({
 	avatarPlaceholder: { justifyContent: 'center', alignItems: 'center' },
 	label: { fontSize: 14, marginTop: 12, marginBottom: 6 },
 	input: { borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 12, fontSize: 16 },
-	button: { marginTop: 20, backgroundColor: '#16a34a', paddingVertical: 14, borderRadius: 10, alignItems: 'center', minHeight: 44, minWidth: 44 },
+	button: { marginTop: 20, paddingVertical: 14, borderRadius: 10, alignItems: 'center', minHeight: 44, minWidth: 44 },
 	buttonPressed: { opacity: 0.9 },
 	buttonText: { color: 'white', fontSize: 16, fontWeight: '600' },
-	smallButton: { backgroundColor: '#3b82f6', paddingVertical: 10, paddingHorizontal: 14, borderRadius: 8, minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
+	smallButton: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 8, minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
 	smallButtonText: { color: 'white', fontWeight: '600' }
 });
 

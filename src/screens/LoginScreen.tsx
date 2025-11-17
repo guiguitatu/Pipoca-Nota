@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, AccessibilityInfo, findNodeHandle } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useThemePreference } from '../context/ThemeContext';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
@@ -8,6 +9,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Auth'>;
 
 export default function LoginScreen({ navigation }: Props) {
 	const { signIn } = useAuth();
+	const { colors: palette } = useThemePreference();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const emailRef = useRef<TextInput>(null);
@@ -22,10 +24,10 @@ export default function LoginScreen({ navigation }: Props) {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text accessibilityRole="header" style={styles.title}>Pipoca & Nota</Text>
+		<View style={[styles.container, { backgroundColor: palette.background }]}>
+			<Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>Pipoca & Nota</Text>
 
-			<Text style={styles.label}>E-mail</Text>
+			<Text style={[styles.label, { color: palette.text }]}>E-mail</Text>
 			<TextInput
 				ref={emailRef}
 				accessibilityLabel="Campo de e-mail"
@@ -33,18 +35,28 @@ export default function LoginScreen({ navigation }: Props) {
 				autoComplete="email"
 				keyboardType="email-address"
 				placeholder="seu@email.com"
-				style={styles.input}
+				placeholderTextColor={palette.inputPlaceholder}
+				style={[styles.input, {
+					backgroundColor: palette.inputBackground,
+					borderColor: palette.border,
+					color: palette.inputText
+				}]}
 				value={email}
 				onChangeText={setEmail}
 				onFocus={focusEmail}
 			/>
 
-			<Text style={styles.label}>Senha</Text>
+			<Text style={[styles.label, { color: palette.text }]}>Senha</Text>
 			<TextInput
 				accessibilityLabel="Campo de senha"
 				secureTextEntry
 				placeholder="Sua senha"
-				style={styles.input}
+				placeholderTextColor={palette.inputPlaceholder}
+				style={[styles.input, {
+					backgroundColor: palette.inputBackground,
+					borderColor: palette.border,
+					color: palette.inputText
+				}]}
 				value={password}
 				onChangeText={setPassword}
 			/>
@@ -53,9 +65,9 @@ export default function LoginScreen({ navigation }: Props) {
 				accessibilityRole="button"
 				accessibilityLabel="Entrar"
 				onPress={onSubmit}
-				style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+				style={({ pressed }) => [styles.button, { backgroundColor: palette.primary }, pressed && styles.buttonPressed]}
 			>
-				<Text style={styles.buttonText}>Entrar</Text>
+				<Text style={[styles.buttonText, { color: palette.surface }]}>Entrar</Text>
 			</Pressable>
 
 			<Pressable
@@ -64,7 +76,7 @@ export default function LoginScreen({ navigation }: Props) {
 				onPress={() => navigation.navigate('Signup')}
 				style={styles.link}
 			>
-				<Text style={styles.linkText}>Não tem conta? Cadastre-se</Text>
+				<Text style={[styles.linkText, { color: palette.primary }]}>Não tem conta? Cadastre-se</Text>
 			</Pressable>
 		</View>
 	);
@@ -84,7 +96,6 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		marginTop: 20,
-		backgroundColor: '#3b82f6',
 		paddingVertical: 14,
 		borderRadius: 10,
 		alignItems: 'center',
